@@ -1,7 +1,3 @@
-import tempfile
-
-import mlflow
-import yaml
 from numpy.core.multiarray import ndarray
 from sklearn.metrics import confusion_matrix
 import logging
@@ -20,16 +16,6 @@ class BufferedConfusionMatrix(BufferMetric):
         logger.info(
             cm
         )
-
-        # Mlflow logging
-
-        fn = tempfile.mktemp(suffix=".txt")
-        with open(fn, "w") as f:
-            yaml.dump(
-                cm.tolist(),
-                f
-            )
-        mlflow.log_artifact(fn)
 
         return cm
 

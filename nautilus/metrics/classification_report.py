@@ -1,7 +1,3 @@
-import tempfile
-
-import mlflow
-import yaml
 from numpy.core.multiarray import ndarray
 from sklearn.metrics import classification_report
 import logging
@@ -19,16 +15,6 @@ class BufferedClassificationReport(BufferMetric):
         logger.info(
             classification_report(y_true, y_pred)
         )
-
-        # Mlflow logging
-
-        fn = tempfile.mktemp(suffix=".txt")
-        with open(fn, "w") as f:
-            yaml.dump(
-                classification_report(y_true, y_pred, output_dict=True),
-                f
-            )
-        mlflow.log_artifact(fn)
 
         return None
 
