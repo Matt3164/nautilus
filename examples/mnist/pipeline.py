@@ -2,7 +2,7 @@
 import logging
 from functools import partial
 
-from nautilus.train.trainer.sklearn import SkBufferTrainer
+from nautilus.experiment.trainer.sklearn import SkBufferTrainer
 from sklearn.ensemble import RandomForestClassifier
 
 from examples.mnist.data import MnistLoader

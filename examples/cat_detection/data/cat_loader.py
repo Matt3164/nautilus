@@ -1,14 +1,13 @@
+import os
 from glob import glob
 from itertools import chain
 from typing import List
 
-import os
-
 import cv2
+from nautilus.data.sample.sample import Sample
 from numpy.ma import array
 
-from nautilus.data.dataset.dataset import Dataset
-from nautilus.data.sample.sample import Sample
+from nautilus.dataset.dataset import Dataset
 
 
 class CatLoader(Dataset):

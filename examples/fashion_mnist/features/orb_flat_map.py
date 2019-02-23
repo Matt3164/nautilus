@@ -1,7 +1,8 @@
 from typing import List
 
 from nautilus.data.sample.sample import Sample
-from nautilus.imatools.transform.features.orb import OrbDescriptor
+
+from nautilus.imatools.features import OrbDescriptor
 from nautilus.transform.transform import Transform
 
 

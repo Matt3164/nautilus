@@ -1,7 +1,7 @@
 from keras.datasets import fashion_mnist
 
-from nautilus.data.dataset.train_test_dataset import TrainTestDataset
-from nautilus.data.dataset.utils import DatasetUtils
+from nautilus.dataset.dataset import Dataset
+from nautilus.dataset.train_test_dataset import TrainTestDataset
 
 
 class FashionMnistLoader(object):
@@ -11,11 +11,11 @@ class FashionMnistLoader(object):
     def dataset():
         (x_train, y_train), (x_test, y_test) = fashion_mnist.load_data()
         return TrainTestDataset(
-            train_dataset=DatasetUtils.from_xy_array(
+            train_dataset=Dataset.from_arrays(
                 x_train,
                 y_train.reshape(-1, 1)
             ),
-            test_dataset=DatasetUtils.from_xy_array(
+            test_dataset=Dataset.from_arrays(
                 x_test,
                 y_test.reshape(-1, 1)
             )

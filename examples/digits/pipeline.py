@@ -3,18 +3,18 @@ import logging
 from functools import partial
 
 from nautilus.config.sk_config import BufferConfig
-from nautilus.train.trainer.sklearn import SkBufferTrainer
+from nautilus.data.dataset.utils import DatasetUtils
+from nautilus.experiment.trainer.sklearn import SkBufferTrainer
+from nautilus.model.sklearn.sklearn_model import SkModel
+from nautilus.transform.sample_transform_utils import SampleTrsUtils
+from nautilus.transform.tensor.flatten import Flatten
 from sklearn.ensemble import RandomForestClassifier
 
 from examples.digits.digits_loader import DigitsLoader
+from nautilus.context.to_prediction_context import ToPredictionContext
 from nautilus.context.train_context import TrainContext
-from nautilus.data.dataset.utils import DatasetUtils
 from nautilus.metrics.classification_report import BufferedClassificationReport
 from nautilus.metrics.confusion_matrix import BufferedConfusionMatrix
-from nautilus.model.sklearn.sklearn_model import SkModel
-from nautilus.transform.context.to_prediction_context import ToPredictionContext
-from nautilus.transform.sample_transform_utils import SampleTrsUtils
-from nautilus.transform.tensor.flatten import Flatten
 
 logging.basicConfig(level=logging.INFO)
 

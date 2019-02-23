@@ -1,8 +1,8 @@
-from sklearn.ensemble import RandomForestClassifier
-
-from nautilus.imatools.transform.features.haar import Haar
 from nautilus.model.pipeline_model import PipelineModel
 from nautilus.model.sklearn.sklearn_model import SkModel
+from sklearn.ensemble import RandomForestClassifier
+
+from nautilus.imatools.features.haar import Haar
 from nautilus.transform.sequential import Sequential
 from nautilus.transform.tensor.resize import Resize
 

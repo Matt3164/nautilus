@@ -1,7 +1,7 @@
 
 import logging
 
-from nautilus.train.trainer.sklearn import SkBufferTrainer
+from nautilus.experiment.trainer.sklearn import SkBufferTrainer
 from sklearn.datasets import load_digits
 from sklearn.ensemble import RandomForestClassifier
 

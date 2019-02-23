@@ -16,4 +16,6 @@ class BufferedClassificationReport(BufferMetric):
             classification_report(y_true, y_pred)
         )
 
+        return None
+
 
