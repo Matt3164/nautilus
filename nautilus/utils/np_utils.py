@@ -1,6 +1,6 @@
 from typing import Callable, List
 
-from numpy import load, ndarray, savez_compressed
+from numpy import load, ndarray, savez_compressed, concatenate
 from numpy import array as nparray
 
 from itertools import chain
