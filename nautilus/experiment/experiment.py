@@ -74,17 +74,17 @@ class Experiment(object):
 
         self.model.fit(train_dataset.X, train_dataset.Y.ravel())
 
-        for fold, dataset in zip(["train", "test"],
-                                 [train_dataset, test_dataset]):
+        if len(self.metrics)>0:
+            for fold, dataset in zip(["train", "test"],
+                                     [train_dataset, test_dataset]):
 
-            # TODO Cache it?
-            prediction_context = ToPredictionContext(self.model)(dataset)
+                prediction_context = ToPredictionContext(self.model)(dataset)
 
-            for metric in self.metrics:
+                for metric in self.metrics:
 
-                m = metric(prediction_context)
+                    m = metric(prediction_context)
 
-                logger.info("Fold {0} : metric {1} --> {2}".format(fold,
-                                                                   type(
-                                                                       metric).__name__,
-                                                                   m))
+                    logger.info("Fold {0} : metric {1} --> {2}".format(fold,
+                                                                       type(
+                                                                           metric).__name__,
+                                                                       m))
