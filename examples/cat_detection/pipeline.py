@@ -35,13 +35,6 @@ if __name__ == '__main__':
 
     print(extract_patches_2d(b, (256, 256), max_patches=100).shape)
 
-
-
-
-
-
-
-
     # print( extract_patches_2d(cv2.imread(list_images[0]), (256, 256), max_patches=100).shape )
     #
     # idx = randint(0, len(list_images))
