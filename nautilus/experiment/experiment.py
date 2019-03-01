@@ -33,37 +33,36 @@ class Experiment(object):
     def root_dir(self):
         return exp_utils.root_dir(self.exp_tag)
 
-    def train_data(self):
+    def train_dataset(self):
         return os.path.join(self.root_dir(), "train.npz")
 
-    def test_data(self):
+    def test_dataset(self):
         return os.path.join(self.root_dir(), "test.npz")
 
     def get_train_data(self) -> Dataset:
 
-        if file_utils.exists(self.train_data()):
+        if file_utils.exists(self.train_dataset()):
 
-            return Dataset.from_file(self.train_data())
-
+            return Dataset.from_file(self.train_dataset())
         else:
 
             dataset = self.train_dataset_fn()
 
-            dataset.to_file(self.train_data())
+            dataset.to_file(self.train_dataset())
 
             return dataset
 
     def get_test_data(self) -> Dataset:
 
-        if file_utils.exists(self.test_data()):
+        if file_utils.exists(self.test_dataset()):
 
-            return Dataset.from_file(self.test_data())
+            return Dataset.from_file(self.test_dataset())
 
         else:
 
             dataset = self.test_dataset_fn()
 
-            dataset.to_file(self.test_data())
+            dataset.to_file(self.test_dataset())
 
             return dataset
 
@@ -71,10 +70,10 @@ class Experiment(object):
         exp_utils.init(self.exp_tag)
         train_dataset = self.get_train_data()
         test_dataset = self.get_test_data()
-
         self.model.fit(train_dataset.X, train_dataset.Y.ravel())
 
         if len(self.metrics)>0:
+            self.data = self.get_test_data()
             for fold, dataset in zip(["train", "test"],
                                      [train_dataset, test_dataset]):
 
