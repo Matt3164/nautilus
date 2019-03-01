@@ -1,3 +1,4 @@
+import mlflow
 from sklearn.ensemble import RandomForestClassifier
 import logging
 
@@ -5,6 +6,7 @@ from sklearn.pipeline import make_pipeline
 
 from examples.fashion_mnist.data import FashionMnistLoader
 from nautilus.experiment.experiment import Experiment
+from nautilus.metrics.buffer_accuracy import BufferAccuracy
 from nautilus.metrics.classification_report import BufferedClassificationReport
 from nautilus.metrics.confusion_matrix import BufferedConfusionMatrix
 from nautilus.transformer.from_feature import TransformerFromFeature
@@ -36,16 +38,24 @@ def main(_):
         rf
     )
 
-    experiment = Experiment(
-        train_dataset_fn=lambda : dataset.train,
-        test_dataset_fn=lambda : dataset.test,
-        model=pipeline,
-        exp_tag="rf_exp",
-        metrics=[BufferedConfusionMatrix(), BufferedClassificationReport()],
-        use_cache=False
-    )
+    with mlflow.start_run():
 
-    experiment.run()
+        mlflow.log_artifact(__file__)
+
+        mlflow.log_param("n_estimators", FLAGS.n_estimators)
+        mlflow.log_param("shape_resized", FLAGS.shape_resized)
+
+        experiment = Experiment(
+            train_dataset_fn=lambda : dataset.train,
+            test_dataset_fn=lambda : dataset.test,
+            model=pipeline,
+            exp_tag="rf_exp",
+            metrics=[BufferedConfusionMatrix(), BufferedClassificationReport(),
+                     BufferAccuracy()],
+            use_cache=False
+        )
+
+        experiment.run()
 
 if __name__ == '__main__':
     app.run(main)
