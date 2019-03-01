@@ -7,7 +7,7 @@ from nautilus.dataset import dataset_utils
 from nautilus.experiment.experiment import Experiment
 from nautilus.metrics.classification_report import BufferedClassificationReport
 from nautilus.metrics.confusion_matrix import BufferedConfusionMatrix
-from nautilus.transform.sequential import Sequential
+from nautilus.transformer.from_feature import TransformerFromFeature
 from nautilus.utils import image_utils, np_utils
 
 from absl import app
@@ -25,25 +25,22 @@ logging.basicConfig(level=logging.INFO)
 def main(_):
     dataset = FashionMnistLoader().dataset()
 
-    feature_computer = Sequential.from_transforms(
-        image_utils.cvresize_fn((FLAGS.shape_resized, FLAGS.shape_resized)),
-        np_utils.flatten
-    )
-
-    # PCA and Nearest Neighbours
-
     pca = PCA(n_components=FLAGS.pca_components)
     nn = KNeighborsClassifier(n_neighbors=FLAGS.k, n_jobs=FLAGS.n_jobs)
-    pipeline = Pipeline(steps=[('pca', pca), ('nn', nn)])
+
+    pipeline = Pipeline(steps=[
+        ("resizer", TransformerFromFeature(image_utils.cvresize_fn((
+        FLAGS.shape_resized,FLAGS.shape_resized)))),
+        ("flattener", TransformerFromFeature(np_utils.flatten)),
+        ('pca', pca), ('nn', nn)])
 
     experiment = Experiment(
-        train_dataset_fn=lambda : dataset_utils.map_x(dataset.train,
-                                                      feature_computer),
-        test_dataset_fn=lambda : dataset_utils.map_x(dataset.test,
-                                                      feature_computer),
+        train_dataset_fn=lambda : dataset.train,
+        test_dataset_fn=lambda : dataset.test,
         model=pipeline,
         exp_tag="pca_nn_exp",
-        metrics=[BufferedConfusionMatrix(), BufferedClassificationReport()]
+        metrics=[BufferedConfusionMatrix(), BufferedClassificationReport()],
+        use_cache=False
     )
 
     experiment.run()

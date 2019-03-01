@@ -17,7 +17,8 @@ class ToPredictionContext(Transform):
 
         return BufferPredictionCtx(
             y_true=Ytrue,
-            y_pred=Ypred.argmax(axis=1)
+            y_pred=Ypred.argmax(axis=1),
+            y_pred_prob=Ypred
         )
 
 

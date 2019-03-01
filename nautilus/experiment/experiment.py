@@ -21,7 +21,8 @@ class Experiment(object):
                  test_dataset_fn: Callable[[], Dataset],
                  model: BaseEstimator,
                  metrics: List[BufferMetric],
-                 exp_tag: str
+                 exp_tag: str,
+                 use_cache: bool=True
                  ):
         """Constructor for Experiment"""
         self.train_dataset_fn = train_dataset_fn
@@ -29,6 +30,7 @@ class Experiment(object):
         self.model = model
         self.metrics = metrics
         self.exp_tag = exp_tag
+        self.use_cache=use_cache
 
     def root_dir(self):
         return exp_utils.root_dir(self.exp_tag)
@@ -41,20 +43,21 @@ class Experiment(object):
 
     def get_train_data(self) -> Dataset:
 
-        if file_utils.exists(self.train_dataset()):
+        if file_utils.exists(self.train_dataset()) and self.use_cache:
 
             return Dataset.from_file(self.train_dataset())
         else:
 
             dataset = self.train_dataset_fn()
 
-            dataset.to_file(self.train_dataset())
+            if self.use_cache:
+                dataset.to_file(self.train_dataset())
 
             return dataset
 
     def get_test_data(self) -> Dataset:
 
-        if file_utils.exists(self.test_dataset()):
+        if file_utils.exists(self.test_dataset()) and self.use_cache:
 
             return Dataset.from_file(self.test_dataset())
 
@@ -62,7 +65,8 @@ class Experiment(object):
 
             dataset = self.test_dataset_fn()
 
-            dataset.to_file(self.test_dataset())
+            if self.use_cache:
+                dataset.to_file(self.test_dataset())
 
             return dataset
 
@@ -87,3 +91,4 @@ class Experiment(object):
                                                                        type(
                                                                            metric).__name__,
                                                                        m))
+

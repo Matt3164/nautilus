@@ -1,13 +1,15 @@
 from sklearn.ensemble import RandomForestClassifier
 import logging
 
-from sklearn.pipeline import make_pipeline
+from sklearn.pipeline import make_pipeline, FeatureUnion
+from sklearn.preprocessing import FunctionTransformer
 
 from examples.fashion_mnist.data import FashionMnistLoader
 from nautilus.experiment.experiment import Experiment
 from nautilus.metrics.classification_report import BufferedClassificationReport
 from nautilus.metrics.confusion_matrix import BufferedConfusionMatrix
 from nautilus.transformer.from_feature import TransformerFromFeature
+from nautilus.transformer.from_model import ModelTransformer
 from nautilus.utils import image_utils, np_utils
 from absl import app
 from absl import flags
@@ -33,19 +35,39 @@ def main(_):
         TransformerFromFeature(image_utils.cvresize_fn((FLAGS.shape_resized,
                                                         FLAGS.shape_resized))),
         TransformerFromFeature(np_utils.flatten),
+        FeatureUnion(
+            [
+                ('identity', FunctionTransformer(func=lambda x: x)),
+                ('rf_0', ModelTransformer(model=RandomForestClassifier(
+                    max_depth=None,
+                    n_estimators=10,
+                    bootstrap=True, n_jobs=FLAGS.n_jobs)))
+            ]
+        ),
+        FeatureUnion(
+            [
+                ('identity_2', FunctionTransformer(func=lambda x: x)),
+                ('rf_1', ModelTransformer(model=RandomForestClassifier(
+                    max_depth=None,
+                    n_estimators=10,
+                    bootstrap=True,
+                    n_jobs=FLAGS.n_jobs)))
+            ]
+        ),
         rf
     )
 
     experiment = Experiment(
-        train_dataset_fn=lambda : dataset.train,
-        test_dataset_fn=lambda : dataset.test,
+        train_dataset_fn=lambda: dataset.train,
+        test_dataset_fn=lambda: dataset.test,
         model=pipeline,
-        exp_tag="rf_exp",
+        exp_tag="chained_rf_exp",
         metrics=[BufferedConfusionMatrix(), BufferedClassificationReport()],
         use_cache=False
     )
 
     experiment.run()
+
 
 if __name__ == '__main__':
     app.run(main)
